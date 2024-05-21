@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 interface UserRegister {
   name: string;
   email: string;
@@ -9,4 +11,10 @@ interface UserLogin {
   password: string;
 }
 
-export { UserRegister, UserLogin };
+interface UserRequest extends Request {
+  user: {
+    id: string;
+  };
+}
+
+export { UserRegister, UserLogin, UserRequest };

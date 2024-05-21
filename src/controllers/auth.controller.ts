@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 import { PrismaClient } from "@prisma/client";
 import { UserRegister } from "../types/auth.types";
@@ -66,6 +67,41 @@ export const createUser = async (req: Request, res: Response) => {
     });
 
     return res.status(201).json(user);
+  } catch (error) {
+    throw error;
+  }
+};
+
+// login user
+export const loginUser = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) throw "Email and password are required";
+
+  try {
+    const user = await userClient.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) throw "User not found";
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) throw "Invalid password";
+
+    const payload: {
+      id: string;
+    } = {
+      id: user.id,
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET || "", {
+      expiresIn: "1h",
+    });
+
+    return res.status(200).json(user);
   } catch (error) {
     throw error;
   }
