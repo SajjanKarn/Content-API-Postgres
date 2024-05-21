@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express, { Application } from "express";
+import morgan from "morgan";
 import {
   developmentErrors,
   notFound,
@@ -10,21 +11,24 @@ import authRouter from "./routes/auth.route";
 import postRouter from "./routes/post.route";
 
 dotenv.config({ path: "src/.env" });
+const NODE_ENV = process.env.NODE_ENV;
 
 const app: Application = express();
 
 // middlewares
 app.use(express.json());
+if (NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
 // routes
 app.use("/api/auth", authRouter);
 app.use("/api", postRouter);
 
 // error handlers
-const NODE_ENV = process.env.NODE_ENV;
 app.use(prismaValidationErrors);
 app.use(notFound);
-if (NODE_ENV) {
+if (NODE_ENV === "development") {
   app.use(developmentErrors);
 } else {
   app.use(productionErrors);
