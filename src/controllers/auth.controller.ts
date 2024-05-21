@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import { PrismaClient } from "@prisma/client";
-import { UserRegister } from "../types/auth.types";
+import { UserRegister, UserRequest } from "../types/auth.types";
 
 const userClient = new PrismaClient().user;
 
@@ -101,15 +101,15 @@ export const loginUser = async (req: Request, res: Response) => {
       expiresIn: "1h",
     });
 
-    return res.status(200).json(user);
+    return res.status(200).json({ ...user, token });
   } catch (error) {
     throw error;
   }
 };
 
 // update user
-export const updateUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
+export const updateUser = async (req: UserRequest, res: Response) => {
+  const id = req.user.id;
 
   if (!id) throw "User id is required";
 
@@ -142,8 +142,8 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 // delete user
-export const deleteUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
+export const deleteUser = async (req: UserRequest, res: Response) => {
+  const id = req.user.id;
 
   if (!id) throw "User id is required";
 

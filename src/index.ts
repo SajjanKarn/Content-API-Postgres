@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import express, { Application, Request, Response } from "express";
+import express, { Application } from "express";
 import {
   developmentErrors,
   notFound,
@@ -7,6 +7,7 @@ import {
   productionErrors,
 } from "./handlers/handlers";
 import authRouter from "./routes/auth.route";
+import postRouter from "./routes/post.route";
 
 dotenv.config({ path: "src/.env" });
 
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // routes
 app.use("/api/auth", authRouter);
+app.use("/api", postRouter);
 
 // error handlers
 const NODE_ENV = process.env.NODE_ENV;

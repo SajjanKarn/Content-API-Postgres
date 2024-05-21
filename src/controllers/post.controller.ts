@@ -58,12 +58,23 @@ export const createPost = async (req: UserRequest, res: Response) => {
 };
 
 // update post
-export const updatePost = async (req: Request, res: Response) => {
+export const updatePost = async (req: UserRequest, res: Response) => {
   const { id } = req.params;
   const { title, content }: CreatePost = req.body;
 
   if (!id) throw "Post id is required";
   if (!title || !content) throw "Title and content are required";
+
+  const post = await postClient.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  // match user id with post user id
+  if (post?.userId !== req.user.id) {
+    return res.status(403).json("Unauthorized");
+  }
 
   try {
     const post: Post = await postClient.update({
@@ -83,10 +94,21 @@ export const updatePost = async (req: Request, res: Response) => {
 };
 
 // delete post
-export const deletePost = async (req: Request, res: Response) => {
+export const deletePost = async (req: UserRequest, res: Response) => {
   const { id } = req.params;
 
   if (!id) throw "Post id is required";
+
+  const post = await postClient.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  // match user id with post user id
+  if (post?.userId !== req.user.id) {
+    return res.status(403).json("Unauthorized");
+  }
 
   try {
     await postClient.delete({
@@ -102,10 +124,21 @@ export const deletePost = async (req: Request, res: Response) => {
 };
 
 // publish post
-export const publishPost = async (req: Request, res: Response) => {
+export const publishPost = async (req: UserRequest, res: Response) => {
   const { id } = req.params;
 
   if (!id) throw "Post id is required";
+
+  const post = await postClient.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  // match user id with post user id
+  if (post?.userId !== req.user.id) {
+    return res.status(403).json("Unauthorized");
+  }
 
   try {
     const post: Post = await postClient.update({

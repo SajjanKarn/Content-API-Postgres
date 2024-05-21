@@ -36,8 +36,11 @@ export const prismaValidationErrors = (
     // Handle validation errors
     res.status(400).json({ error: "Validation error", details: error.message });
   } else {
+    console.log(error);
     // Handle other errors
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "Internal server error", message: error.message });
   }
 };
 

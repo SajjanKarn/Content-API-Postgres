@@ -11,10 +11,12 @@ interface UserLogin {
   password: string;
 }
 
+interface DecodedToken {
+  id: string;
+}
+
 interface UserRequest extends Request {
-  user: {
-    id: string;
-  };
+  user: DecodedToken;
 }
 
 export { UserRegister, UserLogin, UserRequest };
