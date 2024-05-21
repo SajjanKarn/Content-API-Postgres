@@ -26,7 +26,7 @@ app.use("/api/auth", authRouter);
 app.use("/api", postRouter);
 
 // error handlers
-
+app.use(prismaValidationErrors);
 app.use(notFound);
 if (NODE_ENV === "development") {
   app.use(developmentErrors);
